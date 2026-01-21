@@ -1,0 +1,49 @@
+--basic query
+SELECT TOP 5 * FROM order_details;
+
+SELECT * FROM pizzas WHERE size = 'L';
+
+SELECT pt.name, p.size, p.price 
+FROM pizza_types pt
+JOIN pizzas p ON pt.pizza_type_id = p.pizza_type_id;
+
+SELECT pt.category, SUM(od.quantity * p.price) AS Total_Revenue
+FROM order_details od
+JOIN pizzas p ON od.pizza_id = p.pizza_id
+JOIN pizza_types pt ON p.pizza_type_id = pt.pizza_type_id
+GROUP BY pt.category
+ORDER BY Total_Revenue DESC;
+
+SELECT pt.category, SUM(od.quantity * p.price) as Revenue
+FROM order_details od
+JOIN pizzas p ON od.pizza_id = p.pizza_id
+JOIN pizza_types pt ON p.pizza_type_id = pt.pizza_type_id
+GROUP BY pt.category
+HAVING SUM(od.quantity * p.price) > 100;
+
+-- TOP 5 Highest Priced Pizzas
+SELECT TOP 5 name, price 
+FROM pizzas p
+JOIN pizza_types pt ON p.pizza_type_id = pt.pizza_type_id
+ORDER BY price DESC;
+
+-- WHERE & JOIN: Analysis of 'Classic' category pizzas
+SELECT pt.name, p.size, p.price
+FROM pizza_types pt
+JOIN pizzas p ON pt.pizza_type_id = p.pizza_type_id
+WHERE pt.category = 'Classic';
+
+-- GROUP BY, HAVING, ORDER BY: Total Revenue by Category
+-- Showing only categories that earned more than $10,000
+SELECT pt.category, SUM(od.quantity * p.price) AS Total_Revenue
+FROM order_details od
+JOIN pizzas p ON od.pizza_id = p.pizza_id
+JOIN pizza_types pt ON p.pizza_type_id = pt.pizza_type_id
+GROUP BY pt.category
+HAVING SUM(od.quantity * p.price) > 10000
+ORDER BY Total_Revenue DESC;
+
+-- VERIFY DATA: Count of rows in each table
+SELECT 'Orders' as TableName, COUNT(*) as RowsCount FROM orders
+UNION
+SELECT 'Order_Details', COUNT(*) FROM order_details;
